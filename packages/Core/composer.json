@@ -1,0 +1,33 @@
+{
+    "name": "beapp/repository-tester",
+    "description": "Testing library for Symfony repositories",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["symfony", "doctrine", "repository", "test"],
+    "authors": [
+        {
+            "name": "Tanguy Reviller",
+            "email": "t.reviller@beapp.fr"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-json": "*",
+        "doctrine/orm": "^2.6",
+        "phpunit/phpunit": "^8.2",
+        "symfony/symfony": "^3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Beapp\\Tester\\Repository\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
