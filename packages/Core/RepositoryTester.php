@@ -50,10 +50,10 @@ class RepositoryTester
     }
 
     /**
-     * @return TestReporter
+     * @return TestReporter|array
      * @throws \ReflectionException
      */
-    public function test()
+    public function crawlRepositories()
     {
         $this->logger->info('Start crawling repos');
 
@@ -61,24 +61,15 @@ class RepositoryTester
 
         $this->crawlClasses($metadatas);
 
-        return $this->testReporter;
+        return $this->unitTestMode ? $this->methodsData : $this->testReporter;
     }
 
     /**
-     * Build data to use them into unit tests
-     * @see RepositoryTest
-     *
-     * @return array
+     * @param bool $unitTestMode
      */
-    public function getMethodsForUnitTest(): array
+    public function setUnitTestMode(bool $unitTestMode)
     {
-        $this->unitTestMode = true;
-
-        $metadatas = $this->entityManager->getMetadataFactory()->getAllMetadata();
-
-        $this->crawlClasses($metadatas);
-
-        return $this->methodsData;
+        $this->unitTestMode = $unitTestMode;
     }
 
     /**
