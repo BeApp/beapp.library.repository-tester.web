@@ -3,6 +3,7 @@
 namespace Beapp\RepositoryTesterBundle\Service;
 
 use Beapp\RepositoryTesterBundle\Exception\BuildParamException;
+use Beapp\RepositoryTesterBundle\Test\MethodTester;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -27,9 +28,6 @@ class RepositoryTester
 
     /** @var ParamBuilder */
     private $paramBuilder;
-
-    /** @var array */
-    private $methodsData = [];
 
     /** @var bool */
     private $unitTestMode = false;
@@ -58,9 +56,9 @@ class RepositoryTester
 
         $metadatas = $this->entityManager->getMetadataFactory()->getAllMetadata();
 
-        $this->crawlClasses($metadatas);
+        $methodsTesters = $this->crawlClasses($metadatas);
 
-        return $this->unitTestMode ? $this->methodsData : $this->testReporter;
+        return $this->unitTestMode ? $methodsTesters : $this->testReporter;
     }
 
     /**
@@ -73,9 +71,12 @@ class RepositoryTester
 
     /**
      * @param ClassMetadata[] $entitiesMetadata
+     * @return MethodTester[]
      */
-    public function crawlClasses(array $entitiesMetadata)
+    public function crawlClasses(array $entitiesMetadata): array
     {
+        $methodsTesters = [];
+
         foreach($entitiesMetadata as $entityMetadata)
         {
             $reflectionClass = $entityMetadata->getReflectionClass();
@@ -97,18 +98,22 @@ class RepositoryTester
 
             $methods = get_class_methods($repositoryClass);
 
-            $this->crawlMethods($methods, $repositoryClass, $repository);
+            $methodsTesters = array_merge($methodsTesters, $this->crawlMethods($methods, $repositoryClass, $repository));
         }
+
+        return $methodsTesters;
     }
 
     /**
      * @param array $methods
      * @param string $className
      * @param ObjectRepository $repositoryInstance
+     * @return MethodTester[]
      * @throws \ReflectionException
      */
-    public function crawlMethods(array $methods, string $className, ObjectRepository $repositoryInstance)
+    public function crawlMethods(array $methods, string $className, ObjectRepository $repositoryInstance): array
     {
+        $testers = [];
         $this->testReporter->setCurrentClass($className);
         $this->logger->notice('Test methods of repository : '.$className);
 
@@ -141,60 +146,49 @@ class RepositoryTester
                 continue;
             }
 
-            if($this->unitTestMode){
-                $this->methodsData[] = [$reflectionMethod, $repositoryInstance, $parameters];
-            }else{
-                $this->testMethod($reflectionMethod, $repositoryInstance, $parameters);
+            $methodTester = new MethodTester($reflectionMethod, $repositoryInstance, $parameters);
+            $testers[] = $methodTester;
+
+            if(!$this->unitTestMode){
+                $this->testMethod($methodTester);
             }
         }
+
+        return $testers;
     }
 
     /**
-     * @param \ReflectionMethod $method
-     * @param ObjectRepository $repositoryInstance
-     * @param array $params
-     */
-    public function testMethod(\ReflectionMethod $method, ObjectRepository $repositoryInstance, array $params = []): void
-    {
-        try{
-            $this->invokeMethod($method, $repositoryInstance, $params);
-        }catch(NoResultException|NonUniqueResultException $e){
-            $this->logger->info('Exception thrown during test of method '.$method->name, ['errorMsg' => $e->getMessage()]);
-        }catch(Error|TypeError|QueryException|\Exception $e){
-            $this->testReporter->addErrorTest($e->getMessage(), get_class($e), $method->getName());
-        }
-
-        $this->testReporter->addSuccessTest();
-    }
-
-    /**
-     * @param \ReflectionMethod $method
-     * @param ObjectRepository $repositoryInstance
-     * @param array $params
+     * @param MethodTester $methodTester
      * @return array
      */
-    public function unitaryTestMethod(\ReflectionMethod $method, ObjectRepository $repositoryInstance, array $params = []): array
+    public function testMethod(MethodTester $methodTester)
     {
+        $methodName = $methodTester->getMethod()->getName();
+        $result =  [
+            'success' => true,
+            'reason' => '',
+        ];
+
         try{
-            $this->invokeMethod($method, $repositoryInstance, $params);
+            $methodTester->test();
+
+            $this->testReporter->addSuccessTest();
         }catch(NoResultException|NonUniqueResultException $e){
-            $this->logger->info('Exception thrown during test of method '.$method->name, ['errorMsg' => $e->getMessage()]);
+
+            $this->logger->info('Exception thrown during test of method '.$methodName, ['errorMsg' => $e->getMessage()]);
+
         }catch(Error|TypeError|QueryException|\Exception $e){
-            return ['success' => false, 'reason' => $this->testReporter->buildErrorText($e->getMessage(), get_class($e), $method->name)];
+            $result['reason'] = $this->testReporter->buildErrorText(
+                $e->getMessage(),
+                get_class($e),
+                $methodName
+            );
+
+            $result['success'] = false;
+
+            $this->testReporter->addErrorToReport($e->getMessage(), get_class($e), $methodName);
         }
 
-       return ['success' => true, 'reason' => ''];
-    }
-
-    /**
-     * @param \ReflectionMethod $method
-     * @param ObjectRepository $repositoryInstance
-     * @param array $params
-     * @throws NoResultException|NonUniqueResultException|\Error|\TypeError|QueryException|\Exception
-     */
-    protected function invokeMethod(\ReflectionMethod $method, ObjectRepository $repositoryInstance, array $params)
-    {
-        $this->logger->notice('Test of method '.$method->getName());
-        $method->invokeArgs($repositoryInstance, $params);
+        return $result;
     }
 }

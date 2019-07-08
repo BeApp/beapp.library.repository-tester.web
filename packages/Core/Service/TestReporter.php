@@ -53,7 +53,7 @@ class TestReporter
         return sprintf('%s thrown during test of method "%s" : %s', $exceptionClass, $method, $errorMessage);
     }
 
-    public function addErrorTest(string $errorMessage, string $exceptionClass, string $method)
+    public function addErrorToReport(string $errorMessage, string $exceptionClass, string $method)
     {
         $this->classesTests[$this->currentClass] .= '<error>E</error>';
         $this->classesErrors[$this->currentClass][] = $this->buildErrorText($errorMessage, $exceptionClass, $method);

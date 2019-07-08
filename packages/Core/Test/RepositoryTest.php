@@ -3,6 +3,7 @@
 namespace Beapp\Tester\Repository\Test;
 
 use Beapp\RepositoryTesterBundle\Service\RepositoryTester;
+use Beapp\RepositoryTesterBundle\Test\MethodTester;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Kernel;
@@ -50,13 +51,11 @@ class RepositoryTest extends WebTestCase
      * @test
      * @dataProvider getRepositoriesMethods
      *
-     * @param \ReflectionMethod $method
-     * @param ObjectRepository $repositoryInstance
-     * @param array $params
+     * @param MethodTester $methodTester
      */
-    public function testRepositories(\ReflectionMethod $method, ObjectRepository $repositoryInstance, array $params)
+    public function testRepositories(MethodTester $methodTester)
     {
-        $result = $this->getRepositoryTester()->unitaryTestMethod($method, $repositoryInstance, $params);
+        $result = $this->getRepositoryTester()->testMethod($methodTester);
 
         $this->assertEquals(true, $result['success'], $result['reason']);
     }
