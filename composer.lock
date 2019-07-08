@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a860729f3b8029736b42f277e939eb65",
+    "content-hash": "eecca0723ee7c683899230f11f8b6dd7",
     "packages": [
         {
             "name": "beapp/doctrine-pagination",
