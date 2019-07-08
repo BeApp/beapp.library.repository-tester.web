@@ -3,7 +3,7 @@
     "description": "Symfony testing bundle for Doctrine repositories",
     "type": "library",
     "license": "MIT",
-    "keywords": ["symfony","doctrine", "repository", "test"],
+    "keywords": ["symfony", "doctrine", "repository", "test"],
     "authors": [
         {
             "name": "Tanguy Reviller",
@@ -24,7 +24,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.2-dev"
+            "dev-master": "0.3-dev"
         }
     },
     "config": {
