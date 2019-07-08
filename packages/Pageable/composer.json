@@ -1,0 +1,32 @@
+{
+    "name": "beapp/repository-tester-pageable",
+    "description": "Beapp pageable integration into testing library for Symfony repositories",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["symfony", "doctrine", "repository", "test"],
+    "authors": [
+        {
+            "name": "Tanguy Reviller",
+            "email": "t.reviller@beapp.fr"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-json": "*",
+        "beapp/doctrine-extensions": "0.1.0",
+        "beapp/repository-tester": "0.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Beapp\\Tester\\Repository\\Pageable": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
