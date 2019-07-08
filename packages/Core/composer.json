@@ -1,9 +1,9 @@
 {
-    "name": "beapp/repository-tester",
-    "description": "Testing library for Doctrine repositories",
+    "name": "beapp/repository-tester-bundle",
+    "description": "Symfony testing bundle for Doctrine repositories",
     "type": "library",
     "license": "MIT",
-    "keywords": ["symfony", "doctrine", "repository", "test"],
+    "keywords": ["symfony","doctrine", "repository", "test"],
     "authors": [
         {
             "name": "Tanguy Reviller",
@@ -19,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Beapp\\Tester\\Repository\\": ""
+            "Beapp\\RepositoryTesterBundle\\": ""
         }
     },
     "extra": {

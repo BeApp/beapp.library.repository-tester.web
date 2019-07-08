@@ -1,8 +1,8 @@
 <?php
 
-namespace Beapp\Tester\Repository;
+namespace Beapp\RepositoryTesterBundle\Service;
 
-use Beapp\Tester\Repository\Exception\BuildParamException;
+use Beapp\RepositoryTesterBundle\Exception\BuildParamException;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -38,14 +38,13 @@ class RepositoryTester
      * RepositoryTester constructor.
      * @param LoggerInterface $logger
      * @param EntityManagerInterface $entityManager
-     * @param TestReporter $testReporter
      * @param ParamBuilder $paramBuilder
      */
-    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager, TestReporter $testReporter, ParamBuilder $paramBuilder)
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager, ParamBuilder $paramBuilder)
     {
         $this->logger = $logger;
         $this->entityManager = $entityManager;
-        $this->testReporter = $testReporter;
+        $this->testReporter = new TestReporter();
         $this->paramBuilder = $paramBuilder;
     }
 

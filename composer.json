@@ -23,18 +23,18 @@
     },
     "autoload": {
         "psr-4": {
-            "Beapp\\Tester\\Repository\\": "packages/Core/",
-            "Beapp\\Tester\\Repository\\Pageable\\": "packages/Pageable/"
+            "Beapp\\RepositoryTesterBundle\\": "packages/Core/",
+            "Beapp\\RepositoryTesterBundle\\Pageable\\": "packages/Pageable/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Beapp\\Tester\\Repository\\": "tests/Core",
-            "Beapp\\Tester\\Repository\\Pageable\\": "tests/Pageable"
+            "Beapp\\RepositoryTesterBundle\\": "packages/Core/Tests",
+            "Beapp\\RepositoryTesterBundle\\Pageable\\": "tests/Pageable"
         }
     },
     "replace": {
-        "beapp/repository-tester": "self.version",
+        "beapp/repository-tester-bundle": "self.version",
         "beapp/repository-tester-pageable": "self.version"
     },
     "config": {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Beapp\Tester\Repository;
+namespace Beapp\RepositoryTesterBundle\Service;
 
-use Beapp\Tester\Repository\Exception\BuildParamException;
+use Beapp\RepositoryTesterBundle\Exception\BuildParamException;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 
