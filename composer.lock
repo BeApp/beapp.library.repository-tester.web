@@ -4,29 +4,32 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "060a1bee4b293c8edceb90a54f2ec050",
+    "content-hash": "eecca0723ee7c683899230f11f8b6dd7",
     "packages": [
         {
-            "name": "beapp/doctrine-extensions",
-            "version": "0.2.0",
+            "name": "beapp/doctrine-pagination",
+            "version": "1.0.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/BeApp/beapp.library.doctrine-extensions.web.git",
-                "reference": "84dc8681d0c4db770c163ee2ab3271ee5e5b77f8"
+                "url": "https://github.com/BeApp/beapp.library.doctrine-pagination.web.git",
+                "reference": "f6301f527f4f3cef9a689cc9d2c54f40edc60c06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BeApp/beapp.library.doctrine-extensions.web/zipball/84dc8681d0c4db770c163ee2ab3271ee5e5b77f8",
-                "reference": "84dc8681d0c4db770c163ee2ab3271ee5e5b77f8",
+                "url": "https://api.github.com/repos/BeApp/beapp.library.doctrine-pagination.web/zipball/f6301f527f4f3cef9a689cc9d2c54f40edc60c06",
+                "reference": "f6301f527f4f3cef9a689cc9d2c54f40edc60c06",
                 "shasum": ""
             },
             "require": {
                 "doctrine/orm": "^2.6",
-                "ext-json": "*",
-                "php": ">=7.1"
+                "php": ">=7.1",
+                "symfony/http-foundation": "^3.0||^4.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "7.4.4"
+                "friendsofsymfony/rest-bundle": "^2.5"
+            },
+            "suggest": {
+                "friendsofsymfony/rest-bundle": "^2.5"
             },
             "type": "library",
             "extra": {
@@ -36,7 +39,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Beapp\\Doctrine\\Extension\\": "src"
+                    "Beapp\\Doctrine\\Pagination\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -49,12 +52,15 @@
                     "email": "d.villeneuve@beapp.fr"
                 }
             ],
-            "description": "Common extensions classes for Doctrine",
+            "description": "Simple Doctrine pagination library for multiple usages",
             "keywords": [
+                "datatables",
                 "doctrine",
-                "extensions"
+                "pagination",
+                "rest",
+                "select2"
             ],
-            "time": "2018-11-26T12:04:31+00:00"
+            "time": "2019-05-13T17:38:26+00:00"
         },
         {
             "name": "doctrine/annotations",

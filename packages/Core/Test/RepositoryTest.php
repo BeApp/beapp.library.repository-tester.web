@@ -2,7 +2,7 @@
 
 namespace Beapp\Tester\Repository\Test;
 
-use Beapp\Tester\Repository\RepositoryTester;
+use Beapp\RepositoryTesterBundle\Service\RepositoryTester;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Kernel;
@@ -39,7 +39,11 @@ class RepositoryTest extends WebTestCase
      */
     public function getRepositoriesMethods(): array
     {
-        return $this->getRepositoryTester()->getMethodsForUnitTest();
+        $repositoryTester = $this->getRepositoryTester();
+
+        $repositoryTester->setUnitTestMode(true);
+
+        return $repositoryTester->crawlRepositories();
     }
 
     /**

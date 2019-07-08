@@ -1,6 +1,6 @@
 <?php
 
-namespace Beapp\Tester\Repository\Exception;
+namespace Beapp\RepositoryTesterBundle\Exception;
 
 use Exception;
 

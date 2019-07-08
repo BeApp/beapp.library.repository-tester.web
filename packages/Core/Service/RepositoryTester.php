@@ -1,8 +1,8 @@
 <?php
 
-namespace Beapp\Tester\Repository;
+namespace Beapp\RepositoryTesterBundle\Service;
 
-use Beapp\Tester\Repository\Exception\BuildParamException;
+use Beapp\RepositoryTesterBundle\Exception\BuildParamException;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -38,22 +38,21 @@ class RepositoryTester
      * RepositoryTester constructor.
      * @param LoggerInterface $logger
      * @param EntityManagerInterface $entityManager
-     * @param TestReporter $testReporter
      * @param ParamBuilder $paramBuilder
      */
-    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager, TestReporter $testReporter, ParamBuilder $paramBuilder)
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager, ParamBuilder $paramBuilder)
     {
         $this->logger = $logger;
         $this->entityManager = $entityManager;
-        $this->testReporter = $testReporter;
+        $this->testReporter = new TestReporter();
         $this->paramBuilder = $paramBuilder;
     }
 
     /**
-     * @return TestReporter
+     * @return TestReporter|array
      * @throws \ReflectionException
      */
-    public function test()
+    public function crawlRepositories()
     {
         $this->logger->info('Start crawling repos');
 
@@ -61,24 +60,15 @@ class RepositoryTester
 
         $this->crawlClasses($metadatas);
 
-        return $this->testReporter;
+        return $this->unitTestMode ? $this->methodsData : $this->testReporter;
     }
 
     /**
-     * Build data to use them into unit tests
-     * @see RepositoryTest
-     *
-     * @return array
+     * @param bool $unitTestMode
      */
-    public function getMethodsForUnitTest(): array
+    public function setUnitTestMode(bool $unitTestMode)
     {
-        $this->unitTestMode = true;
-
-        $metadatas = $this->entityManager->getMetadataFactory()->getAllMetadata();
-
-        $this->crawlClasses($metadatas);
-
-        return $this->methodsData;
+        $this->unitTestMode = $unitTestMode;
     }
 
     /**

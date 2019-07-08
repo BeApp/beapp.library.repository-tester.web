@@ -1,6 +1,6 @@
 <?php
 
-namespace Beapp\Tester\Repository;
+namespace Beapp\RepositoryTesterBundle\Service;
 
 use Symfony\Component\Console\Output\OutputInterface;
 

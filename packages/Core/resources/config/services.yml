@@ -1,0 +1,19 @@
+services:
+  beapp.service.param_builder:
+    class: Beapp\RepositoryTesterBundle\Service\ParamBuilder
+    arguments:
+      - '@monolog.logger'
+
+  beapp.service.repository_tester:
+    class: Beapp\RepositoryTesterBundle\Service\RepositoryTester
+    arguments:
+      - '@monolog.logger'
+      - '@doctrine.orm.default_entity_manager'
+      - '@beapp.service.param_builder'
+
+  beapp.command.test_repository:
+    class: Beapp\RepositoryTesterBundle\Command\TestRepositoryCommand
+    arguments:
+      - '@beapp.service.repository_tester'
+    tags:
+      - { name: console.command }

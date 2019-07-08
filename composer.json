@@ -1,53 +1,43 @@
 {
-  "name": "beapp/repository-tester",
-  "description": "Testing library for Symfony repositories",
-  "type": "library",
-  "license": "MIT",
-  "keywords": [
-    "doctrine",
-    "symfony",
-    "repository",
-    "test"
-  ],
-  "authors": [
-    {
-      "name": "Tanguy Reviller",
-      "email": "t.reviller@beapp.fr"
+    "name": "beapp/repository-tester",
+    "type": "library",
+    "description": "Testing library for Symfony repositories",
+    "keywords": ["doctrine", "symfony", "repository", "test"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tanguy Reviller",
+            "email": "t.reviller@beapp.fr"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-json": "*",
+        "beapp/doctrine-pagination": "^1.0",
+        "doctrine/orm": "^2.6",
+        "phpunit/phpunit": "^8.2",
+        "symfony/symfony": "^3.4"
+    },
+    "require-dev": {
+        "symplify/monorepo-builder": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Beapp\\RepositoryTesterBundle\\": "packages/Core/",
+            "Beapp\\RepositoryTesterBundle\\Pageable\\": "packages/Pageable/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Beapp\\RepositoryTesterBundle\\": "packages/Core/Tests",
+            "Beapp\\RepositoryTesterBundle\\Pageable\\": "tests/Pageable"
+        }
+    },
+    "replace": {
+        "beapp/repository-tester-bundle": "self.version",
+        "beapp/repository-tester-pageable": "self.version"
+    },
+    "config": {
+        "sort-packages": true
     }
-  ],
-  "require": {
-    "php": ">=7.1",
-    "ext-json": "*",
-    "beapp/doctrine-extensions": "^0.2.0",
-    "doctrine/orm": "^2.6",
-    "phpunit/phpunit": "^8.2",
-    "symfony/symfony": "^3.4"
-  },
-  "autoload": {
-    "psr-4": {
-      "Beapp\\Tester\\Repository\\": "packages/Core",
-      "Beapp\\Tester\\Repository\\Pageable": "packages/Pageable"
-    }
-  },
-  "require-dev": {
-    "symplify/monorepo-builder": "^6.0"
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Beapp\\Tester\\Repository\\": "tests/Core",
-      "Beapp\\Tester\\Repository\\Pageable": "tests/Pageable"
-    }
-  },
-  "replace": {
-    "beapp/repository-tester": "self.version",
-    "beapp/repository-tester-pageable": "self.version"
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0-dev"
-    }
-  },
-  "config": {
-    "sort-packages": true
-  }
 }
