@@ -13,12 +13,12 @@
     "require": {
         "php": ">=7.1",
         "ext-json": "*",
-        "beapp/doctrine-extensions": "0.1.0",
+        "beapp/doctrine-pagination": "^1.0",
         "beapp/repository-tester": "^0.2"
     },
     "autoload": {
         "psr-4": {
-            "Beapp\\Tester\\Repository\\Pageable": ""
+            "Beapp\\Tester\\Repository\\Pageable\\": ""
         }
     },
     "extra": {
