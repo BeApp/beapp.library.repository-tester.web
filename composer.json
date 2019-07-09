@@ -14,8 +14,10 @@
         "php": ">=7.1",
         "ext-json": "*",
         "beapp/doctrine-pagination": "^1.0",
+        "doctrine/doctrine-bundle": "^1.11",
         "doctrine/orm": "^2.6",
         "phpunit/phpunit": "^8.2",
+        "symfony/monolog-bundle": "^3.4",
         "symfony/symfony": "^3.4"
     },
     "require-dev": {
