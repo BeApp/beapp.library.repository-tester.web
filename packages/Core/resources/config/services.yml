@@ -4,12 +4,24 @@ services:
     arguments:
       - '@monolog.logger'
 
-  beapp.service.repository_tester:
-    class: Beapp\RepositoryTesterBundle\Service\RepositoryTester
+  beapp.service.class_parser:
+    class: Beapp\RepositoryTesterBundle\Service\ClassParser
     arguments:
       - '@monolog.logger'
-      - '@doctrine.orm.default_entity_manager'
+
+  beapp.service.repository:
+    class: Beapp\RepositoryTesterBundle\Service\Repository\RepositoryService
+    arguments:
+      - '@doctrine.orm.entity_manager.abstract'
+      - '@monolog.logger'
+
+  beapp.service.repository_tester:
+    class: Beapp\RepositoryTesterBundle\Service\Repository\RepositoryTester
+    arguments:
+      - '@monolog.logger'
+      - '@beapp.service.repository'
       - '@beapp.service.param_builder'
+      - '@beapp.service.class_parser'
 
   beapp.command.test_repository:
     class: Beapp\RepositoryTesterBundle\Command\TestRepositoryCommand
