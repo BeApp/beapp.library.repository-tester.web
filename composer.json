@@ -1,6 +1,6 @@
 {
     "name": "beapp/repository-tester",
-    "type": "library",
+    "type": "symfony-bundle",
     "description": "Testing library for Symfony repositories",
     "keywords": ["doctrine", "symfony", "repository", "test"],
     "license": "MIT",
