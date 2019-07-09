@@ -21,15 +21,19 @@ class ParamBuilder
     }
 
     /**
-     * @param \ReflectionParameter[] $reflectionParameters
      *
      * @param \ReflectionMethod $method
      * @return array|false
      * @throws BuildParamException
      */
-    public function buildParameters(array $reflectionParameters, \ReflectionMethod $method)
+    public function buildParametersForMethod(\ReflectionMethod $method)
     {
+        $reflectionParameters = $method->getParameters();
         $params = [];
+
+        if(empty($reflectionParameters)){
+            $this->logger->debug('Method '.$method.' has no parameters');
+        }
 
         foreach($reflectionParameters as $reflectionParameter)
         {
@@ -50,12 +54,6 @@ class ParamBuilder
                 }
 
                 $paramValue = $this->convertTypeIntoParam($typeName);
-
-                //Unable to determine type, so invalid the test before it crash
-                if(null === $paramValue){
-                    $reason = sprintf('Parameter %s has no type', $reflectionParameter->getName());
-                    throw new BuildParamException($reason);
-                }
             }else{
                 $reflectionType = $reflectionParameter->getType();
 

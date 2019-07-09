@@ -1,11 +1,12 @@
 <?php
 
-namespace Beapp\Tester\Repository\Pageable;
+namespace Beapp\RepositoryTesterBundle\Pageable;
 
+use Beapp\Doctrine\Pagination\AdminPageable;
 use Beapp\Doctrine\Pagination\ApiPageable;
 use Beapp\Doctrine\Pagination\Pageable;
-use Beapp\Tester\Repository\ParamBuilder;
-use Beapp\Tester\Repository\Exception\BuildParamException;
+use Beapp\RepositoryTesterBundle\Exception\BuildParamException;
+use Beapp\RepositoryTesterBundle\Service\ParamBuilder;
 
 class PageableParamBuilder extends ParamBuilder
 {
@@ -18,7 +19,7 @@ class PageableParamBuilder extends ParamBuilder
      */
     public function convertTypeIntoParam(string $type)
     {
-        if($type === Pageable::class){
+        if(in_array($type, [ApiPageable::class, AdminPageable::class, Pageable::class])){
             return new ApiPageable(1, 10);
         }
 
