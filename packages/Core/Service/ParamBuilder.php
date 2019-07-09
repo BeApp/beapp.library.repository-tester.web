@@ -54,12 +54,6 @@ class ParamBuilder
                 }
 
                 $paramValue = $this->convertTypeIntoParam($typeName);
-
-                //Unable to determine type, so invalid the test before it crash
-                if(null === $paramValue){
-                    $reason = sprintf('Parameter %s has no type', $reflectionParameter->getName());
-                    throw new BuildParamException($reason);
-                }
             }else{
                 $reflectionType = $reflectionParameter->getType();
 
