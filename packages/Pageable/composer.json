@@ -14,7 +14,7 @@
         "php": ">=7.1",
         "ext-json": "*",
         "beapp/doctrine-pagination": "^1.0",
-        "beapp/repository-tester-bundle": "^0.3"
+        "beapp/repository-tester-bundle": "^0.4"
     },
     "autoload": {
         "psr-4": {
@@ -23,7 +23,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.3-dev"
+            "dev-master": "0.4-dev"
         }
     },
     "config": {
