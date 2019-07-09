@@ -5,9 +5,8 @@
          colors="true"
          bootstrap="vendor/autoload.php">
     <testsuites>
-        <testsuite name="All">
-            <directory>packages/Core/Tests</directory>
-            <directory>packages/Pageable/tests</directory>
+        <testsuite name="Pageable Test Suite">
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>
