@@ -29,53 +29,67 @@ class RepositoryTester
     /** @var ParamBuilder */
     private $paramBuilder;
 
-    /** @var bool */
-    private $unitTestMode = false;
+    /** @var ClassParser */
+    private $classParser;
 
     /**
      * RepositoryTester constructor.
      * @param LoggerInterface $logger
      * @param EntityManagerInterface $entityManager
      * @param ParamBuilder $paramBuilder
+     * @param ClassParser $classParser
      */
-    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager, ParamBuilder $paramBuilder)
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager, ParamBuilder $paramBuilder, ClassParser $classParser)
     {
         $this->logger = $logger;
         $this->entityManager = $entityManager;
         $this->testReporter = new TestReporter();
         $this->paramBuilder = $paramBuilder;
-    }
-
-    /**
-     * @return TestReporter|array
-     * @throws \ReflectionException
-     */
-    public function crawlRepositories()
-    {
-        $this->logger->info('Start crawling repos');
-
-        $metadatas = $this->entityManager->getMetadataFactory()->getAllMetadata();
-
-        $methodsTesters = $this->crawlClasses($metadatas);
-
-        return $this->unitTestMode ? $methodsTesters : $this->testReporter;
+        $this->classParser = $classParser;
     }
 
     /**
      * @param bool $unitTestMode
+     * @return TestReporter|array
+     * @throws \ReflectionException
      */
-    public function setUnitTestMode(bool $unitTestMode)
+    public function crawlRepositories(bool $unitTestMode)
     {
-        $this->unitTestMode = $unitTestMode;
+        $this->logger->info('Start crawling repos');
+
+        $repositories = $this->getRepositoriesFromMetadata();
+        $methodsTesters = [];
+
+        foreach($repositories as $repository)
+        {
+            $repositoryClass = get_class($repository);
+            $this->testReporter->setCurrentClass($repositoryClass);
+            $methods = $this->classParser->crawlMethodsFrom($repositoryClass);
+
+            foreach($methods as $method)
+            {
+                $methodTester = $this->buildMethodTester($method, $repository);
+
+                if(null !== $methodTester){
+                    $methodsTesters[] = $methodTester;
+
+                    if($unitTestMode){
+                        $this->testMethod($methodTester);
+                    }
+                }
+            }
+        }
+
+        return $unitTestMode ? $methodsTesters : $this->testReporter;
     }
 
     /**
-     * @param ClassMetadata[] $entitiesMetadata
-     * @return MethodTester[]
+     * @return ObjectRepository[]
      */
-    public function crawlClasses(array $entitiesMetadata): array
+    public function getRepositoriesFromMetadata(): array
     {
-        $methodsTesters = [];
+        $repositories = [];
+        $entitiesMetadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
 
         foreach($entitiesMetadata as $entityMetadata)
         {
@@ -89,72 +103,37 @@ class RepositoryTester
             }
 
             $repository = $this->entityManager->getRepository($entityClass);
-            $repositoryClass = get_class($repository);
 
-            if(EntityRepository::class === $repositoryClass){
+            if(EntityRepository::class === get_class($repository)){
                 $this->logger->debug('No repository declared for entity '.$entityClass.', skip it.');
                 continue;
             }
 
-            $methods = get_class_methods($repositoryClass);
-
-            $methodsTesters = array_merge($methodsTesters, $this->crawlMethods($methods, $repositoryClass, $repository));
+            $repositories[] = $repository;
         }
 
-        return $methodsTesters;
+        return $repositories;
     }
 
     /**
-     * @param array $methods
-     * @param string $className
-     * @param ObjectRepository $repositoryInstance
-     * @return MethodTester[]
-     * @throws \ReflectionException
+     * @param \ReflectionMethod $reflectionMethod
+     * @param object $objectInstance
+     * @return MethodTester|null
      */
-    public function crawlMethods(array $methods, string $className, ObjectRepository $repositoryInstance): array
+    public function buildMethodTester(\ReflectionMethod $reflectionMethod, object $objectInstance): ?MethodTester
     {
-        $testers = [];
-        $this->testReporter->setCurrentClass($className);
-        $this->logger->notice('Test methods of repository : '.$className);
+        $methodName = $reflectionMethod->name;
 
-        foreach($methods as $method){
-            $this->logger->debug('Method name : '.$method);
-            $reflectionMethod = new \ReflectionMethod($className, $method);
+        try{
+            $parameters = $this->paramBuilder->buildParametersForMethod($reflectionMethod);
+        }catch(BuildParamException $e){
+            $this->testReporter->addSkippedTest($methodName, $e->getMessage());
+            $this->logger->notice('Unable to test method '.$methodName, ['errorMessage' => $e->getMessage()]);
 
-            if($reflectionMethod->class !== $className){
-                $this->logger->debug('Method '.$method.' is herited from another class, skip it.');
-                continue;
-            }elseif(!$reflectionMethod->isPublic()){
-                $this->logger->debug('Method '.$method.' isn\'t public, skip it.');
-                continue;
-            }
-
-            $reflectionParameters = $reflectionMethod->getParameters();
-
-            if(empty($reflectionParameters)){
-                $this->logger->debug('Method '.$method.' has no parameters');
-            }
-
-            try{
-                $parameters = $this->paramBuilder->buildParameters($reflectionParameters, $reflectionMethod);
-            }catch(BuildParamException $e){
-                if(!$this->unitTestMode){
-                    $this->testReporter->addSkippedTest($method, $e->getMessage());
-                }
-                $this->logger->notice('Unable to test method '.$method, ['errorMessage' => $e->getMessage()]);
-
-                continue;
-            }
-
-            $methodTester = new MethodTester($reflectionMethod, $repositoryInstance, $parameters);
-            $testers[] = $methodTester;
-
-            if(!$this->unitTestMode){
-                $this->testMethod($methodTester);
-            }
+            return null;
         }
 
-        return $testers;
+        return new MethodTester($reflectionMethod, $objectInstance, $parameters);
     }
 
     /**

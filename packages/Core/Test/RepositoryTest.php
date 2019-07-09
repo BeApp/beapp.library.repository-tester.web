@@ -40,11 +40,7 @@ class RepositoryTest extends WebTestCase
      */
     public function getRepositoriesMethods(): array
     {
-        $repositoryTester = $this->getRepositoryTester();
-
-        $repositoryTester->setUnitTestMode(true);
-
-        return $repositoryTester->crawlRepositories();
+        return $this->getRepositoryTester()->crawlRepositories(true);
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace Beapp\RepositoryTesterBundle\Command;
 
-use Beapp\RepositoryTesterBundle\RepositoryTester;
+use Beapp\RepositoryTesterBundle\Service\RepositoryTester;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,7 +28,7 @@ class TestRepositoryCommand extends Command
     {
         $output->writeln('Begin to test repositories...');
 
-        $testReport = $this->repositoryTester->crawlRepositories();
+        $testReport = $this->repositoryTester->crawlRepositories(false);
 
         $output->writeln('<comment>End of the tests ! Here is the reporting :</comment>');
 
