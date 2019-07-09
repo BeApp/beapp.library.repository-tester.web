@@ -1,13 +1,12 @@
 <?php
 
-namespace Beapp\RepositoryTesterBundle\Service;
+namespace Beapp\RepositoryTesterBundle\Service\Repository;
 
 use Beapp\RepositoryTesterBundle\Exception\BuildParamException;
+use Beapp\RepositoryTesterBundle\Service\ClassParser;
+use Beapp\RepositoryTesterBundle\Service\ParamBuilder;
+use Beapp\RepositoryTesterBundle\Service\TestReporter;
 use Beapp\RepositoryTesterBundle\Test\MethodTester;
-use Doctrine\Common\Persistence\ObjectRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\QueryException;
@@ -20,8 +19,8 @@ class RepositoryTester
     /** @var LoggerInterface */
     private $logger;
 
-    /** @var EntityManagerInterface */
-    private $entityManager;
+    /** @var RepositoryService */
+    private $repositoryService;
 
     /** @var TestReporter */
     private $testReporter;
@@ -35,14 +34,14 @@ class RepositoryTester
     /**
      * RepositoryTester constructor.
      * @param LoggerInterface $logger
-     * @param EntityManagerInterface $entityManager
+     * @param RepositoryService $repositoryService
      * @param ParamBuilder $paramBuilder
      * @param ClassParser $classParser
      */
-    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager, ParamBuilder $paramBuilder, ClassParser $classParser)
+    public function __construct(LoggerInterface $logger, RepositoryService $repositoryService, ParamBuilder $paramBuilder, ClassParser $classParser)
     {
         $this->logger = $logger;
-        $this->entityManager = $entityManager;
+        $this->repositoryService = $repositoryService;
         $this->testReporter = new TestReporter();
         $this->paramBuilder = $paramBuilder;
         $this->classParser = $classParser;
@@ -57,7 +56,7 @@ class RepositoryTester
     {
         $this->logger->info('Start crawling repos');
 
-        $repositories = $this->getRepositoriesFromMetadata();
+        $repositories = $this->repositoryService->getRepositoriesFromMetadata();
         $methodsTesters = [];
 
         foreach($repositories as $repository)
@@ -81,38 +80,6 @@ class RepositoryTester
         }
 
         return $unitTestMode ? $methodsTesters : $this->testReporter;
-    }
-
-    /**
-     * @return ObjectRepository[]
-     */
-    public function getRepositoriesFromMetadata(): array
-    {
-        $repositories = [];
-        $entitiesMetadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
-
-        foreach($entitiesMetadata as $entityMetadata)
-        {
-            $reflectionClass = $entityMetadata->getReflectionClass();
-            $entityClass = $entityMetadata->getName();
-            $this->logger->notice('Inspect entity '.$entityClass);
-
-            if($reflectionClass->isAbstract()){
-                $this->logger->debug($entityClass.' is abstract, skip it.');
-                continue;
-            }
-
-            $repository = $this->entityManager->getRepository($entityClass);
-
-            if(EntityRepository::class === get_class($repository)){
-                $this->logger->debug('No repository declared for entity '.$entityClass.', skip it.');
-                continue;
-            }
-
-            $repositories[] = $repository;
-        }
-
-        return $repositories;
     }
 
     /**

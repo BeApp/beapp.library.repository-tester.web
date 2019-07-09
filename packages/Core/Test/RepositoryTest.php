@@ -2,9 +2,8 @@
 
 namespace Beapp\Tester\Repository\Test;
 
-use Beapp\RepositoryTesterBundle\Service\RepositoryTester;
+use Beapp\RepositoryTesterBundle\Service\Repository\RepositoryTester;
 use Beapp\RepositoryTesterBundle\Test\MethodTester;
-use Doctrine\Common\Persistence\ObjectRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Kernel;
 
