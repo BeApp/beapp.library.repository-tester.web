@@ -21,30 +21,27 @@ class TestReporter
         'failed'  => 0,
     ];
 
-    /** @var string */
-    private $currentClass;
-
     public function setCurrentClass(string $className)
     {
-        $this->currentClass = $className;
-
-        if(!isset($this->classesReports[$this->currentClass])){
-            $this->classesTests[$this->currentClass] = sprintf('%s =>   ', $this->currentClass);
-            $this->classesErrors[$this->currentClass] = [];
-            $this->skippedTests[$this->currentClass] = [];
+        if(!isset($this->classesReports[$className])){
+            $this->classesTests[$className] = sprintf('%s =>   ', $className);
+            $this->classesErrors[$className] = [];
+            $this->skippedTests[$className] = [];
         }
     }
 
-    public function addSuccessTest()
+    public function addSuccessTest(string $className)
     {
-        $this->classesTests[$this->currentClass] .= '<info>.</info>';
+        $this->setCurrentClass($className);
+        $this->classesTests[$className] .= '<info>.</info>';
         $this->testsCount['success']++;
     }
 
-    public function addSkippedTest(string $method, string $reason = 'Unknown reason')
+    public function addSkippedTest(string $className, string $method, string $reason = 'Unknown reason')
     {
-        $this->classesTests[$this->currentClass] .= '<comment>S</comment>';
-        $this->skippedTests[$this->currentClass][] = sprintf('Unable to test method "%s" : %s', $method, $reason);
+        $this->setCurrentClass($className);
+        $this->classesTests[$className] .= '<comment>S</comment>';
+        $this->skippedTests[$className][] = sprintf('Unable to test method "%s" : %s', $method, $reason);
         $this->testsCount['skipped']++;
     }
 
@@ -53,10 +50,11 @@ class TestReporter
         return sprintf('%s thrown during test of method "%s" : %s', $exceptionClass, $method, $errorMessage);
     }
 
-    public function addErrorToReport(string $errorMessage, string $exceptionClass, string $method)
+    public function addErrorToReport(string $className, string $methodName, string $errorMessage, string $exceptionClass)
     {
-        $this->classesTests[$this->currentClass] .= '<error>E</error>';
-        $this->classesErrors[$this->currentClass][] = $this->buildErrorText($errorMessage, $exceptionClass, $method);
+        $this->setCurrentClass($className);
+        $this->classesTests[$className] .= '<error>E</error>';
+        $this->classesErrors[$className][] = $this->buildErrorText($errorMessage, $exceptionClass, $methodName);
         $this->testsCount['failed']++;
     }
 

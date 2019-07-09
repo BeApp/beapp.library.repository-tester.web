@@ -94,7 +94,9 @@ class RepositoryTester
         try{
             $parameters = $this->paramBuilder->buildParametersForMethod($reflectionMethod);
         }catch(BuildParamException $e){
-            $this->testReporter->addSkippedTest($methodName, $e->getMessage());
+            $className = get_class($objectInstance);
+
+            $this->testReporter->addSkippedTest($className, $methodName, $e->getMessage());
             $this->logger->notice('Unable to test method '.$methodName, ['errorMessage' => $e->getMessage()]);
 
             return null;
@@ -110,6 +112,8 @@ class RepositoryTester
     public function testMethod(MethodTester $methodTester)
     {
         $methodName = $methodTester->getMethod()->getName();
+        $className = $methodTester->getTestedClass();
+
         $result =  [
             'success' => true,
             'reason' => '',
@@ -118,7 +122,7 @@ class RepositoryTester
         try{
             $methodTester->test();
 
-            $this->testReporter->addSuccessTest();
+            $this->testReporter->addSuccessTest($className);
         }catch(NoResultException|NonUniqueResultException $e){
 
             $this->logger->info('Exception thrown during test of method '.$methodName, ['errorMsg' => $e->getMessage()]);
@@ -132,7 +136,7 @@ class RepositoryTester
 
             $result['success'] = false;
 
-            $this->testReporter->addErrorToReport($e->getMessage(), get_class($e), $methodName);
+            $this->testReporter->addErrorToReport($className, $methodName, $e->getMessage(), get_class($e));
         }
 
         return $result;

@@ -46,6 +46,11 @@ class MethodTester
         return $this->testedInstance;
     }
 
+    public function getTestedClass(): string
+    {
+        return get_class($this->testedInstance);
+    }
+
     /**
      * @return array
      */
