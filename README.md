@@ -14,7 +14,7 @@ You can use either or both of a Symfony command to manually get a reporting and 
 ## Installation 
 
 ```
-composer require beapp/repository-tester-bundle
+composer require --dev beapp/repository-tester-bundle
 ```
 
 That's all, you're ready to use it now !
@@ -25,7 +25,7 @@ In case you already use our doctrine pagination library, we also provide an inte
 You must so require this package :
 
 ```
-composer require beapp/repository-tester-pageable
+composer require --dev beapp/repository-tester-pageable
 ```
 
 ### Configuration (with Pageable integration)
