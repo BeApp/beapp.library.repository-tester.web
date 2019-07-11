@@ -18,7 +18,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Beapp\\RepositoryTesterBundle\\Pageable\\": ""
+            "Beapp\\RepositoryTesterBundle\\Pageable\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Beapp\\RepositoryTesterBundle\\Pageable\\": "tests"
         }
     },
     "extra": {

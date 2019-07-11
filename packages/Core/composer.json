@@ -19,7 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Beapp\\RepositoryTesterBundle\\": ""
+            "Beapp\\RepositoryTesterBundle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Beapp\\RepositoryTesterBundle\\": "tests"
         }
     },
     "extra": {
