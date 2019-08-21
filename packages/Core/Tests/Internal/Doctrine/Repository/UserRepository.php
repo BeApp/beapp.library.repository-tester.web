@@ -3,10 +3,17 @@
 namespace Beapp\RepositoryTester\Internal\Doctrine\Repository;
 
 use Beapp\RepositoryTester\Internal\Doctrine\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping;
 
 class UserRepository extends EntityRepository
 {
+
+    public function __construct(EntityManagerInterface $em, Mapping\ClassMetadata $class)
+    {
+        parent::__construct($em, $class);
+    }
 
     public function findById(int $id)
     {
