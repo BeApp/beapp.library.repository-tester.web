@@ -1,6 +1,6 @@
 {
     "name": "beapp/repository-tester-bundle",
-    "version": "0.4",
+    "version": "0.5-dev",
     "description": "Symfony testing bundle for Doctrine repositories",
     "type": "symfony-bundle",
     "license": "MIT",
@@ -16,8 +16,8 @@
         "ext-json": "*",
         "doctrine/orm": "^2.6",
         "symfony/console": "^3.4 || ^4.0",
-        "symfony/symfony": "^3.4 || ^4.0",
-        "symfony/monolog-bundle": "^3.4 || ^4.0",
+        "symfony/dependency-injection": "^3.4 || ^4.0",
+        "symfony/monolog-bundle": "^3.3",
         "psr/log": "^1.1",
         "beapp/repository-tester-core": "^0.5"
     },

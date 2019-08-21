@@ -1,6 +1,6 @@
 {
     "name": "beapp/repository-tester-pageable",
-    "version": "0.4",
+    "version": "0.5-dev",
     "description": "Beapp pageable integration into testing library for Doctrine repositories",
     "type": "library",
     "license": "MIT",
