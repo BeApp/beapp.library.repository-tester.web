@@ -1,6 +1,7 @@
 {
     "name": "beapp/repository-tester",
-    "type": "library",
+    "version": "0.4",
+    "type": "symfony-bundle",
     "description": "Testing library for Symfony repositories",
     "keywords": ["doctrine", "symfony", "repository", "test"],
     "license": "MIT",
@@ -14,32 +15,41 @@
         "php": ">=7.1",
         "ext-json": "*",
         "beapp/doctrine-pagination": "^1.0",
-        "doctrine/doctrine-bundle": "^1.11",
         "doctrine/orm": "^2.6",
-        "phpunit/phpunit": "^8.2",
-        "symfony/monolog-bundle": "^3.4",
-        "symfony/symfony": "^3.4"
+        "psr/log": "^1.1",
+        "symfony/console": "^3.4 || ^4.0",
+        "symfony/monolog-bundle": "^3.4 || ^4.0",
+        "symfony/symfony": "^3.4 || ^4.0"
     },
     "require-dev": {
+        "phpunit/phpunit": "^8.2",
         "symplify/monorepo-builder": "^6.0"
     },
     "autoload": {
         "psr-4": {
-            "Beapp\\RepositoryTesterBundle\\": "packages/Core/",
-            "Beapp\\RepositoryTesterBundle\\Pageable\\": "packages/Pageable/"
+            "Beapp\\RepositoryTesterBundle\\": "packages/Bundle/src",
+            "Beapp\\RepositoryTesterBundle\\Pageable\\": "packages/Pageable/src",
+            "Beapp\\RepositoryTester\\": "packages/Core/src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Beapp\\RepositoryTesterBundle\\": "packages/Core/Tests",
-            "Beapp\\RepositoryTesterBundle\\Pageable\\": "tests/Pageable"
+            "Beapp\\RepositoryTesterBundle\\": "packages/Bundle/tests",
+            "Beapp\\RepositoryTesterBundle\\Pageable\\": "packages/Pageable/tests",
+            "Beapp\\RepositoryTester\\": "packages/Core/tests"
         }
     },
     "replace": {
+        "beapp/repository-tester-core": "self.version",
         "beapp/repository-tester-bundle": "self.version",
         "beapp/repository-tester-pageable": "self.version"
     },
     "config": {
         "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.4-dev"
+        }
     }
 }
