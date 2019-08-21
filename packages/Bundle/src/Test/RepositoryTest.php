@@ -40,7 +40,14 @@ class RepositoryTest extends WebTestCase
      */
     public function getRepositoriesMethods(): array
     {
-        return $this->getRepositoryTester()->crawlMethodTesters();
+        $methodTesters = $this->getRepositoryTester()->crawlMethodTesters();
+
+        $dataSet = [];
+        foreach ($methodTesters as $methodTester) {
+            $dataSet[$methodTester->getTestedClass() . '.' . $methodTester->getMethod()->getName()] = [$methodTester];
+        }
+
+        return $dataSet;
     }
 
     /**
