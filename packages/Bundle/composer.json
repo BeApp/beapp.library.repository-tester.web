@@ -14,11 +14,14 @@
         "php": ">=7.1",
         "ext-json": "*",
         "doctrine/orm": "^2.6",
-        "phpunit/phpunit": "^8.2",
         "symfony/console": "^3.4 || ^4.0",
         "symfony/symfony": "^3.4 || ^4.0",
         "symfony/monolog-bundle": "^3.4 || ^4.0",
-        "beapp/repository-tester-core": "@dev"
+        "psr/log": "^1.1",
+        "beapp/repository-tester-core": "^0.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.2"
     },
     "autoload": {
         "psr-4": {
