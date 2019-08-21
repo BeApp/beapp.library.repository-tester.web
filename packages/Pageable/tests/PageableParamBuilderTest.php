@@ -5,57 +5,29 @@ namespace Beapp\RepositoryTesterBundle\Pageable;
 use Beapp\Doctrine\Pagination\AdminPageable;
 use Beapp\Doctrine\Pagination\ApiPageable;
 use Beapp\Doctrine\Pagination\Pageable;
-use Beapp\RepositoryTesterBundle\Exception\BuildParamException;
-use Beapp\RepositoryTesterBundle\Service\ParamBuilderTest;
-use Doctrine\ORM\QueryBuilder;
+use Beapp\RepositoryTester\Exception\BuildParamException;
+use Beapp\RepositoryTester\Tester\ParamBuilderTest;
+use Beapp\RepositoryTesterBundle\Pageable\Internal\CustomPageable;
 
 class PageableParamBuilderTest extends ParamBuilderTest
 {
-    /**
-     * Extended provider from ParamBuilderTest
-     *
-     * @return array
-     */
-    public function typeProvider(): array
+
+    protected function setUp(): void
     {
-        $originalTypes = parent::typeProvider();
-
-        $originalTypes[] = [ApiPageable::class];
-        $originalTypes[] = [AdminPageable::class];
-        $originalTypes[] = [Pageable::class];
-
-        return $originalTypes;
+        parent::setUp();
+        $this->paramBuilder = new PageableParamBuilder($this->logger);
     }
 
     /**
-     * @test
-     * @dataProvider typeProvider
-     *
-     * @param string $paramType
      * @throws BuildParamException
      */
-    public function testConvertTypeIntoParam(string $paramType)
+    public function testGetDummyValueForType_pageable()
     {
-        $paramBuilder = new PageableParamBuilder($this->getMockedLogger());
+        $this->assertInstanceOf(ApiPageable::class, $this->paramBuilder->getDummyValueForType(Pageable::class));
 
-        if(in_array($paramType, [QueryBuilder::class, 'unexpected'])){
-            $this->expectException(BuildParamException::class);
-        }
-
-        $param = $paramBuilder->convertTypeIntoParam($paramType);
-
-        if($paramType === 'int'){
-            $this->assertIsInt($param);
-        }elseif($paramType === 'string'){
-            $this->assertIsString($param);
-        }elseif($paramType === 'float'){
-            $this->assertIsFloat($param);
-        }elseif($paramType === 'bool'){
-            $this->assertIsBool($param);
-        }elseif($paramType === \DateTime::class){
-            $this->assertInstanceOf(\DateTime::class, $param);
-        }elseif(in_array($paramType, [ApiPageable::class, AdminPageable::class, Pageable::class])){
-            $this->assertInstanceOf(ApiPageable::class, $param);
-        }
+        $this->assertInstanceOf(ApiPageable::class, $this->paramBuilder->getDummyValueForType(ApiPageable::class));
+        $this->assertInstanceOf(AdminPageable::class, $this->paramBuilder->getDummyValueForType(AdminPageable::class));
+        $this->assertInstanceOf(CustomPageable::class, $this->paramBuilder->getDummyValueForType(CustomPageable::class));
     }
+
 }
