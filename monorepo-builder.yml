@@ -7,4 +7,5 @@ parameters:
   # for "split" command
   directories_to_repositories:
     packages/Core: 'git@github.com:BeApp/beapp.library.repository-tester-core.web.git'
+    packages/Bundle: 'git@github.com:BeApp/beapp.library.repository-tester-bundle.web.git'
     packages/Pageable: 'git@github.com:BeApp/beapp.library.repository-tester-pageable.web.git'

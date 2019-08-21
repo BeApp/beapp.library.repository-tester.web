@@ -52,7 +52,7 @@ Or to include it to your units tests, put it directly into your phpunit.xml file
 <phpunit>
     <testsuites>
         <testsuite name="Your awesome suite">
-            <file>vendor/beapp/repository-tester-bundle/Test/RepositoryTest.php</file>
+            <file>vendor/beapp/repository-tester-bundle/src/Test/RepositoryTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

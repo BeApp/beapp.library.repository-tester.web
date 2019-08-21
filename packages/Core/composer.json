@@ -1,38 +1,43 @@
 {
-    "name": "beapp/repository-tester-bundle",
-    "description": "Symfony testing bundle for Doctrine repositories",
+    "name": "beapp/repository-tester-core",
+    "version": "0.1.0",
+    "description": "Core testing part for Doctrine repositories",
     "type": "symfony-bundle",
     "license": "MIT",
-    "keywords": ["symfony", "doctrine", "repository", "test"],
+    "keywords": ["doctrine", "repository", "test"],
     "authors": [
         {
             "name": "Tanguy Reviller",
             "email": "t.reviller@beapp.fr"
+        },
+        {
+            "name": "Damien Villeneuve",
+            "email": "d.villeneuve@beapp.fr"
         }
     ],
     "require": {
         "php": ">=7.1",
         "ext-json": "*",
         "doctrine/orm": "^2.6",
-        "phpunit/phpunit": "^8.2",
-        "symfony/symfony": "^3.4"
+        "phpunit/phpunit": "^8.2"
     },
     "autoload": {
         "psr-4": {
-            "Beapp\\RepositoryTesterBundle\\": "src"
+            "Beapp\\RepositoryTester\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Beapp\\RepositoryTesterBundle\\": "tests"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "0.4-dev"
+            "Beapp\\RepositoryTester\\": "tests"
         }
     },
     "config": {
         "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.4-dev"
+        }
     }
 }

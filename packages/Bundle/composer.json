@@ -1,7 +1,7 @@
 {
-    "name": "beapp/repository-tester-pageable",
-    "description": "Beapp pageable integration into testing library for Doctrine repositories",
-    "type": "library",
+    "name": "beapp/repository-tester-bundle",
+    "description": "Symfony testing bundle for Doctrine repositories",
+    "type": "symfony-bundle",
     "license": "MIT",
     "keywords": ["symfony", "doctrine", "repository", "test"],
     "authors": [
@@ -13,17 +13,21 @@
     "require": {
         "php": ">=7.1",
         "ext-json": "*",
-        "beapp/doctrine-pagination": "^1.0",
-        "beapp/repository-tester-bundle": "^0.4"
+        "doctrine/orm": "^2.6",
+        "phpunit/phpunit": "^8.2",
+        "symfony/console": "^3.4 || ^4.0",
+        "symfony/symfony": "^3.4 || ^4.0",
+        "symfony/monolog-bundle": "^3.4 || ^4.0",
+        "beapp/repository-tester-core": "@dev"
     },
     "autoload": {
         "psr-4": {
-            "Beapp\\RepositoryTesterBundle\\Pageable\\": "src"
+            "Beapp\\RepositoryTesterBundle\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Beapp\\RepositoryTesterBundle\\Pageable\\": "tests"
+            "Beapp\\RepositoryTesterBundle\\": "tests"
         }
     },
     "config": {

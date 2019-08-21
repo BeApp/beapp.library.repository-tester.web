@@ -1,0 +1,36 @@
+services:
+  beapp.service.repository_tester.crawler:
+    class: Beapp\RepositoryTester\Crawler\RepositoryCrawler
+    public: true
+    arguments:
+      - '@monolog.logger'
+      - '@doctrine.orm.entity_manager'
+
+  beapp.service.repository_tester.param_builder:
+    class: Beapp\RepositoryTester\Tester\ParamBuilder
+    public: true
+    arguments:
+      - '@monolog.logger'
+
+  beapp.service.repository_tester.tester_factory:
+    class: Beapp\RepositoryTester\Tester\MethodTesterFactory
+    public: true
+    arguments:
+      - '@monolog.logger'
+      - '@beapp.service.repository_tester.param_builder'
+
+  beapp.service.repository_tester:
+    class: Beapp\RepositoryTester\RepositoryTester
+    public: true
+    arguments:
+      - '@monolog.logger'
+      - '@beapp.service.repository_tester.crawler'
+      - '@beapp.service.repository_tester.tester_factory'
+
+  beapp.command.validate_repository:
+    class: Beapp\RepositoryTesterBundle\Command\ValidateRepositoryCommand
+    public: true
+    arguments:
+      - '@beapp.service.repository_tester'
+    tags:
+      - { name: console.command }
