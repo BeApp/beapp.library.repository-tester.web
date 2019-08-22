@@ -24,6 +24,15 @@ class UserRepository extends EntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findByUser(User $user)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.id = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     /**
      * @param string $name
      * @param bool $useRegexp

@@ -9,9 +9,13 @@ use Beapp\RepositoryTester\Exception\UnknownTypeException;
 use Beapp\RepositoryTester\Internal\Logger\ConsoleLogger;
 use Beapp\RepositoryTester\Tester\Internal\MultipleMethods;
 use Beapp\RepositoryTester\Tester\Internal\NonEmptyConstructor;
+use Beapp\RepositoryTester\Tester\Internal\SimpleEntity;
 use Beapp\RepositoryTester\Tester\Internal\SimpleObject;
 use DateTime;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\Tools\Setup;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -21,13 +25,22 @@ class ParamBuilderTest extends TestCase
 {
     /** @var ConsoleLogger */
     protected $logger;
+    /** @var EntityManager */
+    protected $entityManager;
     /** @var ParamBuilder */
     protected $paramBuilder;
 
+    /**
+     * @throws ORMException
+     */
     protected function setUp(): void
     {
         $this->logger = new ConsoleLogger();
-        $this->paramBuilder = new ParamBuilder($this->logger);
+
+        $config = Setup::createAnnotationMetadataConfiguration([__DIR__ . "/Internal"], true, null, null, false);
+        $this->entityManager = EntityManager::create(['driver' => 'pdo_sqlite', 'memory' => true], $config);
+
+        $this->paramBuilder = new ParamBuilder($this->logger, $this->entityManager);
     }
 
     /**
@@ -42,10 +55,20 @@ class ParamBuilderTest extends TestCase
     /**
      * @throws BuildParamException
      */
-    public function testGetDummyValueForTypeNonInstantiableObject()
+    public function testGetDummyValueForType_nonInstantiableObject()
     {
         $this->expectException(NonInstantiableTypeException::class);
         $this->assertInstanceOf(NonEmptyConstructor::class, $this->paramBuilder->getDummyValueForType(NonEmptyConstructor::class));
+    }
+
+    /**
+     * @throws BuildParamException
+     */
+    public function testGetDummyValueForType_entity()
+    {
+        $result = $this->paramBuilder->getDummyValueForType(SimpleEntity::class);
+        $this->assertInstanceOf(SimpleEntity::class, $result);
+        $this->assertIsInt($result->id);
     }
 
     /**

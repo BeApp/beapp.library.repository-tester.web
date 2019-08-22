@@ -15,7 +15,7 @@ class PageableParamBuilderTest extends ParamBuilderTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->paramBuilder = new PageableParamBuilder($this->logger);
+        $this->paramBuilder = new PageableParamBuilder($this->logger, $this->entityManager);
     }
 
     /**

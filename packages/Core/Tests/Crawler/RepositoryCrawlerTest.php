@@ -51,13 +51,13 @@ class RepositoryCrawlerTest extends TestCase
         $userRepository = $this->entityManager->getRepository(User::class);
         $reflectionMethods = $this->repositoryCrawler->lookupMethodsFromRepository($userRepository);
 
-        $this->assertCount(3, $reflectionMethods);
+        $this->assertCount(4, $reflectionMethods);
 
         $methodNames = array_map(function (ReflectionMethod $reflectionMethod) {
             return $reflectionMethod->name;
         }, $reflectionMethods);
         sort($methodNames);
-        $this->assertEquals(['aQueryWithUnknownField', 'findById', 'findByName'], $methodNames);
+        $this->assertEquals(['aQueryWithUnknownField', 'findById', 'findByName', 'findByUser'], $methodNames);
     }
 
 }

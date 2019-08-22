@@ -7,6 +7,8 @@ use Beapp\RepositoryTester\Exception\BuildParamException;
 use Beapp\RepositoryTester\Exception\NonInstantiableTypeException;
 use Beapp\RepositoryTester\Exception\NoTypeFoundException;
 use Beapp\RepositoryTester\Exception\UnknownTypeException;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -16,14 +18,18 @@ class ParamBuilder
 {
     /** @var LoggerInterface */
     private $logger;
+    /** @var EntityManagerInterface */
+    private $entityManager;
 
     /**
      * ParamBuilder constructor.
      * @param LoggerInterface $logger
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager)
     {
         $this->logger = $logger;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -144,21 +150,61 @@ class ParamBuilder
         }
 
         if (class_exists($type)) {
-            try {
-                $reflectionClass = new ReflectionClass($type);
+            $instance = $this->getDummyInstance($type);
+            $instance = $this->initializeInstanceIfEntity($type, $instance);
 
-                $reflectionConstructor = $reflectionClass->getConstructor();
-                if ($reflectionConstructor != null) {
-                    $constructorParams = $this->getParametersDummyValuesForMethod($reflectionConstructor);
-                    return $reflectionClass->newInstance(...array_values($constructorParams));
-                }
-
-                return $reflectionClass->newInstance();
-            } catch (ArgumentCountError|Exception $e) {
-                throw new NonInstantiableTypeException($e->getMessage(), 0, $e);
-            }
+            return $instance;
         }
 
         throw new UnknownTypeException(sprintf('Unhandled arg type : %s', $type));
+    }
+
+    /**
+     * @param string $type
+     * @return object
+     * @throws NonInstantiableTypeException
+     */
+    private function getDummyInstance(string $type)
+    {
+        try {
+            $reflectionClass = new ReflectionClass($type);
+
+            $reflectionConstructor = $reflectionClass->getConstructor();
+            if ($reflectionConstructor != null) {
+                $constructorParams = $this->getParametersDummyValuesForMethod($reflectionConstructor);
+                return $reflectionClass->newInstance(...array_values($constructorParams));
+            }
+
+            return $reflectionClass->newInstance();
+        } catch (ArgumentCountError|Exception $e) {
+            throw new NonInstantiableTypeException($e->getMessage(), 0, $e);
+        }
+    }
+
+    /**
+     * @param $type
+     * @param object $instance
+     * @return object
+     * @throws BuildParamException
+     */
+    private function initializeInstanceIfEntity($type, $instance)
+    {
+        $classMetadataFactory = $this->entityManager->getMetadataFactory();
+        try {
+            // We can't use hasMetadataFor() method as it's only looking in the cache, which may not been warmed-up here
+            $classMetadata = $classMetadataFactory->getMetadataFor($type);
+            $identifierFieldNames = $classMetadata->getIdentifierFieldNames();
+
+            if (!empty($identifierFieldNames)) {
+                foreach ($identifierFieldNames as $identifierFieldName) {
+                    $identifierFieldType = $classMetadata->getTypeOfField($identifierFieldName);
+                    $instance->$identifierFieldName = $this->getDummyValueForType($identifierFieldType);
+                }
+            }
+        } catch (MappingException $e) {
+            // It seems to no be an entity
+        }
+
+        return $instance;
     }
 }
