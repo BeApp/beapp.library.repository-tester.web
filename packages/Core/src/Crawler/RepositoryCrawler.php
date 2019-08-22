@@ -79,6 +79,11 @@ class RepositoryCrawler
             return $reflectionMethod->class === $repositoryClass;
         });
 
+        // Filter out magic methods
+        $reflectionMethods = array_filter($reflectionMethods, function (ReflectionMethod $reflectionMethod) {
+            return substr($reflectionMethod->getName(), 0, 2) !== '__';
+        });
+
         $this->logger->debug('Found methods from class ' . $repositoryClass . ': ' . join(', ', array_map(function (ReflectionMethod $reflectionMethod) {
                 return $reflectionMethod->getName();
             }, $reflectionMethods))

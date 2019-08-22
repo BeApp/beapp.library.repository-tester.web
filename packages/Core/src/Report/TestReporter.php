@@ -2,36 +2,35 @@
 
 namespace Beapp\RepositoryTester\Report;
 
-use Symfony\Component\Console\Output\OutputInterface;
+use Beapp\RepositoryTester\Tester\MethodTester;
+use Exception;
 
-abstract class TestReporter
+interface TestReporter
 {
-    /** @var array */
-    protected $classesTests = [];
 
-    /** @var array */
-    protected $classesErrors = [];
+    /**
+     * @param MethodTester[] $methodTesters
+     */
+    public function testsSessionStarted(array $methodTesters): void;
 
-    /** @var array */
-    protected $skippedTests = [];
+    public function testsSessionFinished(): void;
 
-    /** @var int[] */
-    protected $testsCount = [
-        'success' => 0,
-        'skipped' => 0,
-        'failed' => 0,
-    ];
+    /**
+     * @param MethodTester $methodTester
+     */
+    public function reportSuccessTest(MethodTester $methodTester): void;
 
-    public abstract function setCurrentClass(string $className);
+    /**
+     * @param MethodTester $methodTester
+     * @param string $reason
+     * @param Exception|null $exception
+     */
+    public function reportSkippedTest(MethodTester $methodTester, string $reason = 'Unknown reason', ?Exception $exception = null): void;
 
-    public abstract function addSuccessTest(string $className);
-
-    public abstract function addSkippedTest(string $className, string $method, string $reason = 'Unknown reason');
-
-    public abstract function buildErrorText(string $errorMessage, string $exceptionClass, string $method);
-
-    public abstract function addErrorToReport(string $className, string $methodName, string $errorMessage, string $exceptionClass);
-
-    public abstract function buildReporting(OutputInterface $output);
+    /**
+     * @param MethodTester $methodTester
+     * @param Exception $exception
+     */
+    public function reportErrorTest(MethodTester $methodTester, Exception $exception): void;
 
 }

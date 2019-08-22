@@ -2,6 +2,7 @@
 
 namespace Beapp\RepositoryTester\Tester;
 
+use Beapp\RepositoryTester\Exception\IgnoredMethodTestException;
 use ReflectionMethod;
 
 class IgnoredMethodTester extends MethodTester
@@ -18,7 +19,7 @@ class IgnoredMethodTester extends MethodTester
 
     public function test()
     {
-        // Nothing to do
+        throw new IgnoredMethodTestException("Method ignored: " . $this->reason);
     }
 
     /**

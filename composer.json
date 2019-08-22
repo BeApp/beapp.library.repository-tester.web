@@ -1,6 +1,6 @@
 {
     "name": "beapp/repository-tester",
-    "version": "0.4",
+    "version": "0.6-dev",
     "type": "symfony-bundle",
     "description": "Testing library for Symfony repositories",
     "keywords": ["doctrine", "symfony", "repository", "test"],
@@ -18,8 +18,8 @@
         "doctrine/orm": "^2.6",
         "psr/log": "^1.1",
         "symfony/console": "^3.4 || ^4.0",
-        "symfony/monolog-bundle": "^3.4 || ^4.0",
-        "symfony/symfony": "^3.4 || ^4.0"
+        "symfony/dependency-injection": "^3.4 || ^4.0",
+        "symfony/monolog-bundle": "^3.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.2",
@@ -49,7 +49,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.4-dev"
+            "dev-master": "0.5-dev"
         }
     }
 }

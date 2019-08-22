@@ -3,11 +3,10 @@
 namespace Beapp\RepositoryTester;
 
 use Beapp\RepositoryTester\Crawler\RepositoryCrawler;
+use Beapp\RepositoryTester\Exception\MethodTestException;
 use Beapp\RepositoryTester\Report\TestReporter;
 use Beapp\RepositoryTester\Tester\MethodTester;
 use Beapp\RepositoryTester\Tester\MethodTesterFactory;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Exception;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
@@ -62,46 +61,29 @@ class RepositoryTester
      */
     public function executeTests(TestReporter $testReporter, array $methodTesters): void
     {
+        $testReporter->testsSessionStarted($methodTesters);
+
         foreach ($methodTesters as $methodTester) {
             $this->testMethod($testReporter, $methodTester);
         }
+
+        $testReporter->testsSessionFinished();
     }
 
     /**
      * @param TestReporter $testReporter
      * @param MethodTester $methodTester
-     * @return array
      */
-    public function testMethod(TestReporter $testReporter, MethodTester $methodTester)
+    public function testMethod(TestReporter $testReporter, MethodTester $methodTester): void
     {
-        $methodName = $methodTester->getMethod()->getName();
-        $className = $methodTester->getTestedClass();
-
-        $result = [
-            'success' => true,
-            'reason' => '',
-        ];
-
         try {
             $methodTester->test();
 
-            $testReporter->addSuccessTest($className);
-        } catch (NoResultException|NonUniqueResultException $e) {
-            $this->logger->info('Exception thrown during test of method ' . $methodName, ['errorMsg' => $e->getMessage()]);
-
-            $testReporter->addSkippedTest($className, $methodTester->getMethod()->getName(), $e->getMessage());
+            $testReporter->reportSuccessTest($methodTester);
+        } catch (MethodTestException $e) {
+            $testReporter->reportSkippedTest($methodTester, $e->getMessage(), $e);
         } catch (Exception $e) {
-            $result['reason'] = $testReporter->buildErrorText(
-                $e->getMessage(),
-                get_class($e),
-                $methodName
-            );
-
-            $result['success'] = false;
-
-            $testReporter->addErrorToReport($className, $methodName, $e->getMessage(), get_class($e));
+            $testReporter->reportErrorTest($methodTester, $e);
         }
-
-        return $result;
     }
 }

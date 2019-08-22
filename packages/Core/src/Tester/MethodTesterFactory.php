@@ -34,10 +34,20 @@ class MethodTesterFactory
         } catch (BuildParamException $e) {
             $this->logger->warning('Unable to test method ' . $methodName, ['errorMessage' => $e->getMessage()]);
 
-            return new IgnoredMethodTester($reflectionMethod, $objectInstance, $e->getMessage());
+            return $this->buildIgnoredMethodTester($reflectionMethod, $objectInstance, $e);
         }
 
+        return $this->buildMockMethodTester($reflectionMethod, $objectInstance, $parameters);
+    }
+
+    protected function buildMockMethodTester(ReflectionMethod $reflectionMethod, $objectInstance, array $parameters)
+    {
         return new MockMethodTester($reflectionMethod, $objectInstance, $parameters);
+    }
+
+    protected function buildIgnoredMethodTester(ReflectionMethod $reflectionMethod, $objectInstance, BuildParamException $e)
+    {
+        return new IgnoredMethodTester($reflectionMethod, $objectInstance, $e->getMessage());
     }
 
 }

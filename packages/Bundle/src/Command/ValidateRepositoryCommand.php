@@ -34,15 +34,9 @@ class ValidateRepositoryCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('Begin to test repositories...');
-
-        $consoleReporter = new ConsoleReporter();
+        $consoleReporter = new ConsoleReporter($output);
 
         $methodTesters = $this->repositoryTester->crawlMethodTesters();
         $this->repositoryTester->executeTests($consoleReporter, $methodTesters);
-
-        $output->writeln('<comment>End of the tests ! Here is the reporting :</comment>');
-
-        $consoleReporter->buildReporting($output);
     }
 }
