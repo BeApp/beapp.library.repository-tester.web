@@ -6,11 +6,11 @@ use Beapp\RepositoryTester\Exception\BuildParamException;
 use Beapp\RepositoryTester\Exception\NonInstantiableTypeException;
 use Beapp\RepositoryTester\Exception\NoTypeFoundException;
 use Beapp\RepositoryTester\Exception\UnknownTypeException;
+use Beapp\RepositoryTester\Internal\Doctrine\Entity\SimpleEntity;
 use Beapp\RepositoryTester\Internal\Logger\ConsoleLogger;
-use Beapp\RepositoryTester\Tester\Internal\MultipleMethods;
-use Beapp\RepositoryTester\Tester\Internal\NonEmptyConstructor;
-use Beapp\RepositoryTester\Tester\Internal\SimpleEntity;
-use Beapp\RepositoryTester\Tester\Internal\SimpleObject;
+use Beapp\RepositoryTester\Internal\NonEmptyConstructor;
+use Beapp\RepositoryTester\Internal\SimpleObject;
+use Beapp\RepositoryTester\Internal\SomeMethods;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
@@ -37,7 +37,7 @@ class ParamBuilderTest extends TestCase
     {
         $this->logger = new ConsoleLogger();
 
-        $config = Setup::createAnnotationMetadataConfiguration([__DIR__ . "/Internal"], true, null, null, false);
+        $config = Setup::createAnnotationMetadataConfiguration([__DIR__ . "/../Internal"], true, null, null, false);
         $this->entityManager = EntityManager::create(['driver' => 'pdo_sqlite', 'memory' => true], $config);
 
         $this->paramBuilder = new ParamBuilder($this->logger, $this->entityManager);
@@ -93,7 +93,7 @@ class ParamBuilderTest extends TestCase
     public function testGetParametersDummyValuesForMethod_noTypeDefined()
     {
         $this->expectException(NoTypeFoundException::class);
-        $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(MultipleMethods::class, 'noTypeDefined'));
+        $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(SomeMethods::class, 'noTypeDefined'));
     }
 
     /**
@@ -102,12 +102,12 @@ class ParamBuilderTest extends TestCase
      */
     public function testGetParametersDummyValuesForMethod()
     {
-        $this->assertSame(['value' => 'foo'], $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(MultipleMethods::class, 'typeInCodeOnly')));
-        $this->assertSame(['value' => 'foo'], $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(MultipleMethods::class, 'typeInCommentOnly')));
-        $this->assertSame(['value' => 'foo'], $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(MultipleMethods::class, 'typeInCodeAndComment')));
-        $this->assertSame(['value' => []], $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(MultipleMethods::class, 'mixedUpTypeBetweenCodeAndComment')));
+        $this->assertSame(['value' => 'foo'], $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(SomeMethods::class, 'typeInCodeOnly')));
+        $this->assertSame(['value' => 'foo'], $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(SomeMethods::class, 'typeInCommentOnly')));
+        $this->assertSame(['value' => 'foo'], $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(SomeMethods::class, 'typeInCodeAndComment')));
+        $this->assertSame(['value' => []], $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(SomeMethods::class, 'mixedUpTypeBetweenCodeAndComment')));
 
-        $params = $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(MultipleMethods::class, 'multipleTypes'));
+        $params = $this->paramBuilder->getParametersDummyValuesForMethod(new ReflectionMethod(SomeMethods::class, 'multipleTypes'));
         $this->assertSame(1, $params['value1']);
         $this->assertSame(SimpleObject::class, get_class($params['value2']));
         $this->assertSame(null, $params['value3']);

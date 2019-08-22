@@ -53,7 +53,7 @@ class UserRepository extends EntityRepository
         // Nothing to do
     }
 
-    public function aQueryWithUnknownField(int $email)
+    public function aQueryWithUnknownField(string $email)
     {
         return $this->createQueryBuilder('u')
             ->where('u.email = :email')

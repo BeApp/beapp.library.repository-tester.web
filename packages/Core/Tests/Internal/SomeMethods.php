@@ -1,8 +1,8 @@
 <?php
 
-namespace Beapp\RepositoryTester\Tester\Internal;
+namespace Beapp\RepositoryTester\Internal;
 
-class MultipleMethods
+class SomeMethods
 {
 
     public function noTypeDefined($value)

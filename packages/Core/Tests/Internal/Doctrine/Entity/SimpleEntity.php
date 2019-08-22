@@ -1,6 +1,6 @@
 <?php
 
-namespace Beapp\RepositoryTester\Tester\Internal;
+namespace Beapp\RepositoryTester\Internal\Doctrine\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
