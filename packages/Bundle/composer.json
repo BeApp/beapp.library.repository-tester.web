@@ -1,6 +1,6 @@
 {
     "name": "beapp/repository-tester-bundle",
-    "version": "0.5-dev",
+    "version": "0.5",
     "description": "Symfony testing bundle for Doctrine repositories",
     "type": "symfony-bundle",
     "license": "MIT",
