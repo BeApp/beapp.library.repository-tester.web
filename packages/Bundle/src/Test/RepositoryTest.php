@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class RepositoryTest extends WebTestCase
 {
     /** @var TestReporter */
-    private $PHPUnitReporter;
+    private $phpUnitReporter;
 
     /**
      * @return RepositoryTester
@@ -31,7 +31,7 @@ class RepositoryTest extends WebTestCase
 
     protected function setUp(): void
     {
-        $this->PHPUnitReporter = new PHPUnitReporter();
+        $this->phpUnitReporter = new PHPUnitReporter();
     }
 
     /**
@@ -57,8 +57,6 @@ class RepositoryTest extends WebTestCase
      */
     public function testRepositories(MethodTester $methodTester)
     {
-        $result = $this->getRepositoryTester()->testMethod($this->PHPUnitReporter, $methodTester);
-
-        $this->assertEquals(true, $result['success'], $result['reason']);
+        $this->getRepositoryTester()->testMethod($this->phpUnitReporter, $methodTester);
     }
 }

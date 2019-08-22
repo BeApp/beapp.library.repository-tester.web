@@ -2,10 +2,7 @@
 
 namespace Beapp\RepositoryTester\Tester;
 
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Query\QueryException;
-use Exception;
+use Beapp\RepositoryTester\Exception\MethodTestException;
 use ReflectionMethod;
 
 abstract class MethodTester
@@ -66,7 +63,7 @@ abstract class MethodTester
 
     /**
      * @return mixed
-     * @throws NoResultException|NonUniqueResultException|QueryException|Exception
+     * @throws MethodTestException
      */
     public abstract function test();
 }

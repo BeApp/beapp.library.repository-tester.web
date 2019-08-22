@@ -2,38 +2,55 @@
 
 namespace Beapp\RepositoryTester\Report;
 
-use Symfony\Component\Console\Output\OutputInterface;
+use Beapp\RepositoryTester\Tester\MethodTester;
+use Exception;
+use PHPUnit\Framework\TestCase;
 
-class PHPUnitReporter extends TestReporter
+class PHPUnitReporter extends TestCase implements TestReporter
 {
 
-    public function setCurrentClass(string $className)
+    /**
+     * @inheritDoc
+     */
+    public function testsSessionStarted(array $methodTesters): void
     {
-        // TODO: Implement setCurrentClass() method.
+        // Nothing to do here
     }
 
-    public function addSuccessTest(string $className)
+    /**
+     * @inheritDoc
+     */
+    public function testsSessionFinished(): void
     {
-        // TODO: Implement addSuccessTest() method.
+        // Nothing to do here
     }
 
-    public function addSkippedTest(string $className, string $method, string $reason = 'Unknown reason')
+    /**
+     * @inheritDoc
+     */
+    public function reportSuccessTest(MethodTester $methodTester): void
     {
-        // TODO: Implement addSkippedTest() method.
+        self::assertTrue(true);
     }
 
-    public function buildErrorText(string $errorMessage, string $exceptionClass, string $method)
+    /**
+     * @inheritDoc
+     */
+    public function reportSkippedTest(MethodTester $methodTester, string $reason = 'Unknown reason', ?Exception $exception = null): void
     {
-        return $errorMessage;
+        $this->markTestSkipped($reason);
     }
 
-    public function addErrorToReport(string $className, string $methodName, string $errorMessage, string $exceptionClass)
+    /**
+     * @inheritDoc
+     */
+    public function reportErrorTest(MethodTester $methodTester, Exception $exception): void
     {
-        // TODO: Implement addErrorToReport() method.
+        $className = $methodTester->getTestedClass();
+        $methodName = $methodTester->getMethod()->getName();
+        $errorMessage = $exception->getMessage();
+
+        $this->fail("Repository method $methodName from $className is not valid :\n$errorMessage");
     }
 
-    public function buildReporting(OutputInterface $output)
-    {
-        // TODO: Implement buildReporting() method.
-    }
 }
