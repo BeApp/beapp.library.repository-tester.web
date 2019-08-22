@@ -38,7 +38,12 @@ You will need to override some service configuration in order to use the `Pageab
 
 Now you're ready to use it !
 
-## Getting started 
+## Getting started
+
+Enable the bundle for your project by adding this in the `bundles.php` file :
+```
+Beapp\RepositoryTesterBundle\BeappRepositoryTesterBundle::class => ['all' => true]
+```
 
 To start testing your repositories manually, use this command :
 
